@@ -46,6 +46,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'guard-rspec'
   
+  gem 'simplecov', :require => false, :group => :test
   # Use sqlite3 as the database for Active Record
   gem 'sqlite3'
 

@@ -12,19 +12,20 @@ class Movie::InvalidKeyError < StandardError ; end
     begin
       results_list = []
       search_results = Tmdb::Movie.find(string)
-      
-      search_results.each do |result|
-        movie_hash = Hash.new
-        results_releases = Tmdb::Movie.releases(result.id)['countries']
-        results_releases.each do |release|
-          if release['iso_3166_1'] == "US"
-            movie_hash[:release_date] = release['release_date']
-            movie_hash[:rating] = release['certification']
+      if !search_results.nil?
+        search_results.each do |result|
+          movie_hash = Hash.new
+          results_releases = Tmdb::Movie.releases(result.id)['countries']
+          results_releases.each do |release|
+            if release['iso_3166_1'] == "US"
+              movie_hash[:release_date] = release['release_date']
+              movie_hash[:rating] = release['certification']
+            end
           end
+          movie_hash[:title] = result.title
+          movie_hash[:tmdb_id] = result.id
+          results_list.push(movie_hash)
         end
-        movie_hash[:title] = result.title
-        movie_hash[:tmdb_id] = result.id
-        results_list.push(movie_hash)
       end
     rescue Tmdb::InvalidApiKeyError
         raise Movie::InvalidKeyError, 'Invalid API key'
